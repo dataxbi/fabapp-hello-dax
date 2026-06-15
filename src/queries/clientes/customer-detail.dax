@@ -1,0 +1,16 @@
+DEFINE
+  VAR _Core =
+    SUMMARIZECOLUMNS(
+      'Cliente'[Customer],
+      'Empresa'[Company],
+      'Cliente'[Segment],
+      'Region'[Region],
+      "Revenue", [Facturacion],
+      "Margin", [Margen],
+      "Margin Percent", [Margen (%)],
+      "Orders", [# Pedidos],
+      "Units", SUM('Ventas'[Units])
+    )
+
+EVALUATE
+TOPN(200, _Core, [Revenue], DESC, 'Cliente'[Customer], ASC)

@@ -8,55 +8,55 @@
    `useCssTheme()` and project them into a JS theme object (Vega's SVG output
    cannot resolve `var()` references). */
 @theme static {
-  --color-brand:            #0f6cbd;  /* bar/area fills, button-like brand surfaces */
-  --color-brand-foreground: #0f6cbd;  /* line/point marks, branded text & emphasis */
-  --color-hover:            #f5f5f5;  /* row/cell hover surface in DataGrid + visuals */
+  --color-brand:            #0ab8a6;  /* bar/area fills, button-like brand surfaces */
+  --color-brand-foreground: #1c2e70;  /* line/point marks, branded text & emphasis */
+  --color-hover:            #edf5f7;  /* row/cell hover surface in DataGrid + visuals */
 }
 
 @theme {
   /* Color tokens — light theme
      Usage: bg-*, text-*, border-* (e.g. bg-primary text-primary-foreground)
      Each token has a -foreground pair for text on that surface. */
-  --color-background: #ffffff;                                       /* page background */
-  --color-foreground: #242424;                                       /* default text */
+  --color-background: #f4f8fa;                                       /* page background */
+  --color-foreground: #132238;                                       /* default text */
 
-  --color-card: #ffffff;                                             /* card surfaces */
-  --color-card-foreground: #242424;
+  --color-card: #fcfeff;                                             /* card surfaces */
+  --color-card-foreground: #132238;
 
-  --color-popover: #ffffff;                                          /* popover/dropdown surfaces */
-  --color-popover-foreground: #242424;
+  --color-popover: #fcfeff;                                          /* popover/dropdown surfaces */
+  --color-popover-foreground: #132238;
 
-  --color-primary: #0f6cbd;                                          /* primary actions & buttons */
-  --color-primary-foreground: #ffffff;
+  --color-primary: #0ab8a6;                                          /* primary actions & buttons */
+  --color-primary-foreground: #07111f;
 
-  --color-secondary: #fafafa;                                        /* secondary actions */
-  --color-secondary-foreground: #242424;
+  --color-secondary: #dce9ee;                                        /* secondary actions */
+  --color-secondary-foreground: #132238;
 
-  --color-muted: #f0f0f0;                                            /* subtle backgrounds */
-  --color-muted-foreground: #616161;                                 /* subdued text */
+  --color-muted: #e7f0f3;                                            /* subtle backgrounds */
+  --color-muted-foreground: #5b6d83;                                 /* subdued text */
 
-  --color-accent: #f5f5f5;                                           /* accent highlights */
-  --color-accent-foreground: #242424;
+  --color-accent: #d7ebf1;                                           /* accent highlights */
+  --color-accent-foreground: #132238;
 
-  --color-destructive: #c50f1f;                                      /* errors & destructive actions */
+  --color-destructive: #c53d61;                                      /* errors & destructive actions */
   --color-destructive-foreground: #ffffff;
 
-  --color-border: #e0e0e0;                                           /* default border */
-  --color-input: #e0e0e0;                                            /* input field borders */
-  --color-ring: #0f6cbd;                                             /* focus rings */
+  --color-border: #d3e2e9;                                           /* default border */
+  --color-input: #d3e2e9;                                            /* input field borders */
+  --color-ring: #1c2e70;                                             /* focus rings */
 
   --radius-none: 0;
-  --radius-sm: 2px;
-  --radius-md: 4px;
-  --radius-lg: 6px;
-  --radius-xl: 8px;
-  --radius-2xl: 12px;
-  --radius-3xl: 16px;
-  --radius-4xl: 24px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-3xl: 24px;
+  --radius-4xl: 32px;
   --radius-5xl: 32px;
   --radius-6xl: 40px;
   --radius-full: 9999px;
-  --radius: 6px;
+  --radius: 16px;
 
     /* Spacing — 4px baseline grid 
       Usage: p-*, m-*, gap-* (e.g. p-l gap-m) */
@@ -107,14 +107,10 @@
 
   /* Font Families
      Usage: font-* (e.g. font-heading, font-base) */
-  --font-heading: 'Segoe UI', 'Segoe UI Web (West European)',       /* headings, titles, display text */
-    -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif;
-  --font-base: 'Segoe UI', 'Segoe UI Web (West European)',          /* body text, labels, UI controls */
-    -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif;
+  --font-heading: 'Sora', 'Segoe UI', sans-serif;                   /* headings, titles, display text */
+  --font-base: 'Manrope', 'Segoe UI', sans-serif;                   /* body text, labels, UI controls */
   --font-monospace: Consolas, 'Courier New', Courier, monospace;     /* code, pre-formatted text */
-  --font-numeric: Bahnschrift, 'Segoe UI',                          /* KPI values, numeric displays */
-    'Segoe UI Web (West European)', -apple-system, BlinkMacSystemFont, Roboto,
-    'Helvetica Neue', sans-serif;
+  --font-numeric: 'Sora', 'Manrope', 'Segoe UI', sans-serif;        /* KPI values, numeric displays */
 
   /* Icon Sizes — 100-based scale
      Usage: icon-size-* custom utility (e.g. icon-size-200) */
@@ -135,37 +131,37 @@
 @layer base {
   .dark {
     /* Color tokens — dark theme */
-    --color-background: #292929;
-    --color-foreground: #ffffff;
+    --color-background: #07111f;
+    --color-foreground: #f4fbff;
 
-    --color-card: #292929;
-    --color-card-foreground: #ffffff;
+    --color-card: #0f1727;
+    --color-card-foreground: #f4fbff;
 
-    --color-popover: #292929;
-    --color-popover-foreground: #ffffff;
+    --color-popover: #0f1727;
+    --color-popover-foreground: #f4fbff;
 
-    --color-primary: #115ea3;
-    --color-primary-foreground: #ffffff;
+    --color-primary: #5ce1d8;
+    --color-primary-foreground: #07111f;
 
-    --color-secondary: #1f1f1f;
-    --color-secondary-foreground: #ffffff;
+    --color-secondary: #142336;
+    --color-secondary-foreground: #f4fbff;
 
-    --color-muted: #141414;
-    --color-muted-foreground: #adadad;
+    --color-muted: #102032;
+    --color-muted-foreground: #97a9be;
 
-    --color-accent: #3d3d3d;
-    --color-accent-foreground: #ffffff;
+    --color-accent: #17304a;
+    --color-accent-foreground: #f4fbff;
 
-    --color-destructive: #c50f1f;
+    --color-destructive: #ff7c99;
     --color-destructive-foreground: #ffffff;
 
-    --color-border: #525252;
-    --color-input: #525252;
-    --color-ring: #479ef5;
+    --color-border: #1f3550;
+    --color-input: #1f3550;
+    --color-ring: #5ce1d8;
 
-    --color-brand:            #115ea3;
-    --color-brand-foreground: #479ef5;
-    --color-hover:            #3d3d3d;
+    --color-brand:            #5ce1d8;
+    --color-brand-foreground: #77a4ff;
+    --color-hover:            #17304a;
   }
 }
 
@@ -176,6 +172,17 @@
 
   body {
     @apply bg-background text-foreground antialiased;
+    font-family: var(--font-base);
+    background-image:
+      radial-gradient(circle at top left, rgba(10, 184, 166, 0.08), transparent 28%),
+      radial-gradient(circle at top right, rgba(28, 46, 112, 0.1), transparent 34%);
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font-family: inherit;
   }
 }
 

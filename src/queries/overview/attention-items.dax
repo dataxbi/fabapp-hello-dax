@@ -1,0 +1,49 @@
+DEFINE
+  VAR _LatestDate =
+    MAXX(FILTER(ALL('Fecha'[Date]), NOT ISBLANK(CALCULATE([Facturacion]))), 'Fecha'[Date])
+  VAR _CurrentMonth =
+    DATESBETWEEN('Fecha'[Date], DATE(YEAR(_LatestDate), MONTH(_LatestDate), 1), EOMONTH(_LatestDate, 0))
+  VAR _PrevMonth =
+    DATESBETWEEN('Fecha'[Date], EOMONTH(_LatestDate, -2) + 1, EOMONTH(_LatestDate, -1))
+
+  VAR _Regions =
+    SELECTCOLUMNS(
+      SUMMARIZECOLUMNS(
+        'Region'[Region],
+        _CurrentMonth,
+        "Revenue", [Facturacion],
+        "Revenue Previous", CALCULATE([Facturacion], _PrevMonth),
+        "Margin Percent", [Margen (%)]
+      ),
+      "Scope", "Region",
+      "Entity", 'Region'[Region],
+      "Revenue", [Revenue],
+      "Revenue Previous", [Revenue Previous],
+      "Revenue Var Percent", DIVIDE([Revenue] - [Revenue Previous], [Revenue Previous]),
+      "Margin Percent", [Margin Percent]
+    )
+
+  VAR _Categories =
+    SELECTCOLUMNS(
+      SUMMARIZECOLUMNS(
+        'Producto'[Category],
+        _CurrentMonth,
+        "Revenue", [Facturacion],
+        "Revenue Previous", CALCULATE([Facturacion], _PrevMonth),
+        "Margin Percent", [Margen (%)]
+      ),
+      "Scope", "Categoria",
+      "Entity", 'Producto'[Category],
+      "Revenue", [Revenue],
+      "Revenue Previous", [Revenue Previous],
+      "Revenue Var Percent", DIVIDE([Revenue] - [Revenue Previous], [Revenue Previous]),
+      "Margin Percent", [Margin Percent]
+    )
+
+EVALUATE
+TOPN(
+  8,
+  UNION(_Regions, _Categories),
+  [Revenue Var Percent], ASC,
+  [Margin Percent], ASC
+)

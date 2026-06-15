@@ -1,0 +1,10 @@
+EVALUATE
+SUMMARIZECOLUMNS(
+  'Empresa'[Company],
+  "Revenue", [Facturacion],
+  "Margin", [Margen],
+  "Margin Percent", [Margen (%)],
+  "Orders", [# Pedidos],
+  "Active Clients", [# Clientes activos]
+)
+ORDER BY [Revenue] DESC

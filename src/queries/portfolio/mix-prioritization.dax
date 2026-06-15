@@ -1,0 +1,18 @@
+DEFINE
+  VAR _Core =
+    SUMMARIZECOLUMNS(
+      'Producto'[Category],
+      "Revenue", [Facturacion],
+      "Margin", [Margen],
+      "Units", SUM('Ventas'[Units])
+    )
+  VAR _TotalRevenue = SUMX(_Core, [Revenue])
+  VAR _TotalMargin = SUMX(_Core, [Margin])
+
+EVALUATE
+ADDCOLUMNS(
+  _Core,
+  "Revenue Share", DIVIDE([Revenue], _TotalRevenue),
+  "Margin Share", DIVIDE([Margin], _TotalMargin)
+)
+ORDER BY [Revenue] DESC

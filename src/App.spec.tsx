@@ -5,9 +5,32 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render } from "@testing-library/react";
 import App from "@/App";
+
+vi.mock("@/components/pages/overview-page", () => ({
+    OverviewPage: () => <div>OverviewPage</div>,
+}));
+
+vi.mock("@/components/pages/regions-page", () => ({
+    RegionsPage: () => <div>RegionsPage</div>,
+}));
+
+vi.mock("@/components/pages/portfolio-page", () => ({
+    PortfolioPage: () => <div>PortfolioPage</div>,
+}));
+
+vi.mock("@/components/pages/clients-page", () => ({
+    ClientsPage: () => <div>ClientsPage</div>,
+}));
+
+vi.mock("@/hooks/theme.context", () => ({
+    useThemeContext: () => ({
+        isDark: false,
+        toggleTheme: vi.fn(),
+    }),
+}));
 
 describe("App", () => {
     it("renders without throwing", () => {

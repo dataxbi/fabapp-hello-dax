@@ -1,0 +1,17 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "mark": { "type": "bar", "cornerRadiusEnd": 8 },
+  "encoding": {
+    "y": { "field": "Entity", "type": "nominal", "sort": "x", "axis": { "title": null } },
+    "x": { "field": "RevenueVarPercent", "type": "quantitative", "axis": { "title": "Variacion" } },
+    "color": { "field": "Scope", "type": "nominal", "legend": { "title": "Ambito" } },
+    "tooltip": [
+      { "field": "Scope", "type": "nominal", "title": "Ambito" },
+      { "field": "Entity", "type": "nominal", "title": "Entidad" },
+      { "field": "Revenue", "type": "quantitative", "title": "Facturacion" },
+      { "field": "RevenuePrevious", "type": "quantitative", "title": "Facturacion anterior" },
+      { "field": "RevenueVarPercent", "type": "quantitative", "title": "Var." },
+      { "field": "MarginPercent", "type": "quantitative", "title": "Margen %" }
+    ]
+  }
+}

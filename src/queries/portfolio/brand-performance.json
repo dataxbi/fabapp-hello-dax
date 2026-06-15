@@ -1,0 +1,18 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "mark": { "type": "point", "filled": true, "opacity": 0.85 },
+  "encoding": {
+    "x": { "field": "Units", "type": "quantitative", "axis": { "title": "Unidades" } },
+    "y": { "field": "MarginPercent", "type": "quantitative", "axis": { "title": "Margen %" } },
+    "size": { "field": "Revenue", "type": "quantitative", "legend": { "title": "Facturacion" } },
+    "color": { "field": "ProductoCategory", "type": "nominal", "legend": { "title": "Categoria" } },
+    "tooltip": [
+      { "field": "ProductoCategory", "type": "nominal", "title": "Categoria" },
+      { "field": "ProductoBrand", "type": "nominal", "title": "Marca" },
+      { "field": "Revenue", "type": "quantitative", "title": "Facturacion" },
+      { "field": "Margin", "type": "quantitative", "title": "Margen" },
+      { "field": "MarginPercent", "type": "quantitative", "title": "Margen %" },
+      { "field": "Units", "type": "quantitative", "title": "Unidades" }
+    ]
+  }
+}

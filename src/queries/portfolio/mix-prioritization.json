@@ -1,0 +1,17 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "mark": { "type": "circle", "opacity": 0.85 },
+  "encoding": {
+    "x": { "field": "RevenueShare", "type": "quantitative", "axis": { "title": "Peso en facturacion" } },
+    "y": { "field": "MarginShare", "type": "quantitative", "axis": { "title": "Peso en margen" } },
+    "size": { "field": "Revenue", "type": "quantitative", "legend": { "title": "Facturacion" } },
+    "color": { "field": "ProductoCategory", "type": "nominal", "legend": { "title": "Categoria" } },
+    "tooltip": [
+      { "field": "ProductoCategory", "type": "nominal", "title": "Categoria" },
+      { "field": "RevenueShare", "type": "quantitative", "title": "Peso facturacion" },
+      { "field": "MarginShare", "type": "quantitative", "title": "Peso margen" },
+      { "field": "Revenue", "type": "quantitative", "title": "Facturacion" },
+      { "field": "Margin", "type": "quantitative", "title": "Margen" }
+    ]
+  }
+}

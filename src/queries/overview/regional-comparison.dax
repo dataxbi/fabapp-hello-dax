@@ -1,0 +1,27 @@
+DEFINE
+  VAR _LatestDate =
+    MAXX(FILTER(ALL('Fecha'[Date]), NOT ISBLANK(CALCULATE([Facturacion]))), 'Fecha'[Date])
+  VAR _CurrentMonth =
+    DATESBETWEEN('Fecha'[Date], DATE(YEAR(_LatestDate), MONTH(_LatestDate), 1), EOMONTH(_LatestDate, 0))
+  VAR _PrevMonth =
+    DATESBETWEEN('Fecha'[Date], EOMONTH(_LatestDate, -2) + 1, EOMONTH(_LatestDate, -1))
+  VAR _Core =
+    SUMMARIZECOLUMNS(
+      'Region'[Region],
+      _CurrentMonth,
+      "Revenue", [Facturacion],
+      "Margin", [Margen],
+      "Margin Percent", [Margen (%)],
+      "Orders", [# Pedidos],
+      "Active Clients", [# Clientes activos],
+      "Revenue Previous", CALCULATE([Facturacion], _PrevMonth)
+    )
+  VAR _TotalRevenue = SUMX(_Core, [Revenue])
+
+EVALUATE
+ADDCOLUMNS(
+  _Core,
+  "Revenue Share", DIVIDE([Revenue], _TotalRevenue),
+  "Revenue vs Previous %", DIVIDE([Revenue] - [Revenue Previous], [Revenue Previous])
+)
+ORDER BY [Revenue] DESC

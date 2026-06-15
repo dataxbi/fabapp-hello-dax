@@ -1,0 +1,40 @@
+DEFINE
+  VAR _LatestDate =
+    MAXX(
+      FILTER(ALL('Fecha'[Date]), NOT ISBLANK(CALCULATE([Facturacion]))),
+      'Fecha'[Date]
+    )
+  VAR _CurrentMonth =
+    DATESBETWEEN('Fecha'[Date], DATE(YEAR(_LatestDate), MONTH(_LatestDate), 1), EOMONTH(_LatestDate, 0))
+  VAR _PrevMonth =
+    DATESBETWEEN('Fecha'[Date], EOMONTH(_LatestDate, -2) + 1, EOMONTH(_LatestDate, -1))
+  VAR _SameMonthLastYear =
+    DATESBETWEEN('Fecha'[Date], EOMONTH(_LatestDate, -13) + 1, EOMONTH(_LatestDate, -12))
+  VAR _CurrentYtd =
+    DATESBETWEEN('Fecha'[Date], DATE(YEAR(_LatestDate), 1, 1), _LatestDate)
+  VAR _PreviousYtd =
+    DATESBETWEEN(
+      'Fecha'[Date],
+      DATE(YEAR(_LatestDate) - 1, 1, 1),
+      DATE(YEAR(_LatestDate) - 1, MONTH(_LatestDate), DAY(_LatestDate))
+    )
+
+EVALUATE
+ROW(
+  "Latest Period", FORMAT(_LatestDate, "YYYY-MM"),
+  "Revenue Current", CALCULATE([Facturacion], _CurrentMonth),
+  "Revenue Previous", CALCULATE([Facturacion], _PrevMonth),
+  "Revenue vs Previous %", DIVIDE(CALCULATE([Facturacion], _CurrentMonth) - CALCULATE([Facturacion], _PrevMonth), CALCULATE([Facturacion], _PrevMonth)),
+  "Revenue vs Last Year %", DIVIDE(CALCULATE([Facturacion], _CurrentMonth) - CALCULATE([Facturacion], _SameMonthLastYear), CALCULATE([Facturacion], _SameMonthLastYear)),
+  "Revenue YTD", CALCULATE([Facturacion], _CurrentYtd),
+  "Revenue YTD Previous", CALCULATE([Facturacion], _PreviousYtd),
+  "Revenue YTD vs Previous %", DIVIDE(CALCULATE([Facturacion], _CurrentYtd) - CALCULATE([Facturacion], _PreviousYtd), CALCULATE([Facturacion], _PreviousYtd)),
+  "Margin Current", CALCULATE([Margen], _CurrentMonth),
+  "Margin vs Previous %", DIVIDE(CALCULATE([Margen], _CurrentMonth) - CALCULATE([Margen], _PrevMonth), CALCULATE([Margen], _PrevMonth)),
+  "Margin Percent Current", CALCULATE([Margen (%)], _CurrentMonth),
+  "Margin Percent Previous", CALCULATE([Margen (%)], _PrevMonth),
+  "Orders Current", CALCULATE([# Pedidos], _CurrentMonth),
+  "Orders vs Previous %", DIVIDE(CALCULATE([# Pedidos], _CurrentMonth) - CALCULATE([# Pedidos], _PrevMonth), CALCULATE([# Pedidos], _PrevMonth)),
+  "Active Clients Current", CALCULATE([# Clientes activos], _CurrentMonth),
+  "Active Clients vs Previous %", DIVIDE(CALCULATE([# Clientes activos], _CurrentMonth) - CALCULATE([# Clientes activos], _PrevMonth), CALCULATE([# Clientes activos], _PrevMonth))
+)

@@ -1,0 +1,10 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": { "values": [] },
+  "mark": { "type": "bar", "cornerRadiusEnd": 8 },
+  "encoding": {
+    "x": { "field": "MetricName", "type": "nominal", "axis": { "labelAngle": 0, "title": null } },
+    "y": { "field": "MetricValue", "type": "quantitative", "axis": { "title": null } },
+    "color": { "field": "MetricName", "type": "nominal", "legend": null }
+  }
+}

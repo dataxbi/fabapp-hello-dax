@@ -48,7 +48,7 @@ describe("toDataTable", () => {
     it("passes rows through unchanged", () => {
         const result = toDataTable(queryTable, {});
 
-        expect(result.rows).toBe(queryTable.rows);
+        expect(result.rows).toEqual(queryTable.rows);
     });
 
     it("applies metadata to known columns and falls back for unknown ones", () => {
@@ -60,5 +60,34 @@ describe("toDataTable", () => {
 
         expect(result.columns[0]).toEqual({ name: "ProductsRegion", displayName: "Region" });
         expect(result.columns[1]).toEqual({ name: "[Total Revenue]" });
+    });
+
+    it("matches metadata using normalized column names when runtime names differ", () => {
+        const runtimeQueryTable: QueryTable = {
+            columns: [{ name: "Fecha[Year Month]", dataType: "string" }],
+            rows: [["2026-12"]],
+        };
+        const columnMetadata: ColumnMetadataMap = {
+            "Fecha Year Month": { name: "FechaYearMonth", displayName: "Periodo" },
+        };
+
+        const result = toDataTable(runtimeQueryTable, columnMetadata);
+
+        expect(result.columns).toEqual([{ name: "FechaYearMonth", displayName: "Periodo" }]);
+    });
+
+    it("coerces numeric strings based on query column data types", () => {
+        const typedQueryTable: QueryTable = {
+            columns: [
+                { name: "Revenue", dataType: "Decimal" },
+                { name: "Margin Percent", dataType: "Double" },
+                { name: "Orders", dataType: "Int64" },
+            ],
+            rows: [["$3,814,125.17", "30.20%", "1,227"]],
+        };
+
+        const result = toDataTable(typedQueryTable, {});
+
+        expect(result.rows).toEqual([[3814125.17, 0.302, 1227]]);
     });
 });

@@ -1,0 +1,20 @@
+DEFINE
+  VAR _DateWindow =
+    FILTER(
+      ALL('Fecha'[Date]),
+      'Fecha'[Date] >= DATE(2025, 1, 1) &&
+      'Fecha'[Date] <= DATE(2026, 12, 31)
+    )
+
+EVALUATE
+SUMMARIZECOLUMNS(
+  'Fecha'[Year],
+  'Fecha'[Year Month],
+  _DateWindow,
+  "Revenue", [Facturacion],
+  "Margin", [Margen],
+  "Margin Percent", [Margen (%)],
+  "Orders", [# Pedidos],
+  "Active Clients", [# Clientes activos]
+)
+ORDER BY 'Fecha'[Year], 'Fecha'[Year Month]

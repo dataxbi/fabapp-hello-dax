@@ -1,0 +1,10 @@
+EVALUATE
+SUMMARIZECOLUMNS(
+  'Producto'[Category],
+  "Revenue", [Facturacion],
+  "Margin", [Margen],
+  "Margin Percent", [Margen (%)],
+  "Orders", [# Pedidos],
+  "Units", SUM('Ventas'[Units])
+)
+ORDER BY [Revenue] DESC

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "mark": { "type": "bar", "cornerRadiusEnd": 8 },
+  "encoding": {
+    "y": { "field": "CanalSalesChannel", "type": "nominal", "sort": "-x", "axis": { "title": null } },
+    "x": { "field": "Revenue", "type": "quantitative", "axis": { "title": "Facturacion" } },
+    "color": { "field": "RegionRegion", "type": "nominal", "legend": { "title": "Region" } },
+    "tooltip": [
+      { "field": "RegionRegion", "type": "nominal", "title": "Region" },
+      { "field": "CanalChannelGroup", "type": "nominal", "title": "Grupo" },
+      { "field": "CanalSalesChannel", "type": "nominal", "title": "Canal" },
+      { "field": "Revenue", "type": "quantitative", "title": "Facturacion" },
+      { "field": "MarginPercent", "type": "quantitative", "title": "Margen %" }
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+DEFINE
+  VAR _Core =
+    SUMMARIZECOLUMNS(
+      'Cliente'[Segment],
+      "Revenue", [Facturacion],
+      "Margin", [Margen],
+      "Margin Percent", [Margen (%)],
+      "Orders", [# Pedidos],
+      "Active Clients", [# Clientes activos]
+    )
+  VAR _TotalRevenue = SUMX(_Core, [Revenue])
+
+EVALUATE
+ADDCOLUMNS(_Core, "Revenue Share", DIVIDE([Revenue], _TotalRevenue))
+ORDER BY [Revenue] DESC

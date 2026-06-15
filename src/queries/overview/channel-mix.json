@@ -1,0 +1,14 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "mark": { "type": "arc", "innerRadius": 54, "strokeWidth": 2 },
+  "encoding": {
+    "theta": { "field": "Revenue", "type": "quantitative" },
+    "color": { "field": "CanalSalesChannel", "type": "nominal", "legend": { "title": "Canal" } },
+    "tooltip": [
+      { "field": "CanalChannelGroup", "type": "nominal", "title": "Grupo" },
+      { "field": "CanalSalesChannel", "type": "nominal", "title": "Canal" },
+      { "field": "Revenue", "type": "quantitative", "title": "Facturacion" },
+      { "field": "RevenueShare", "type": "quantitative", "title": "Peso" }
+    ]
+  }
+}

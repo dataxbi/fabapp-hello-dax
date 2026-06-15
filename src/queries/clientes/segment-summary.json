@@ -1,0 +1,16 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "mark": { "type": "bar", "cornerRadiusEnd": 8 },
+  "encoding": {
+    "y": { "field": "ClienteSegment", "type": "nominal", "sort": "-x", "axis": { "title": null } },
+    "x": { "field": "Revenue", "type": "quantitative", "axis": { "title": "Facturacion" } },
+    "tooltip": [
+      { "field": "ClienteSegment", "type": "nominal", "title": "Segmento" },
+      { "field": "Revenue", "type": "quantitative", "title": "Facturacion" },
+      { "field": "Margin", "type": "quantitative", "title": "Margen" },
+      { "field": "MarginPercent", "type": "quantitative", "title": "Margen %" },
+      { "field": "Orders", "type": "quantitative", "title": "Pedidos" },
+      { "field": "ActiveClients", "type": "quantitative", "title": "Clientes activos" }
+    ]
+  }
+}
