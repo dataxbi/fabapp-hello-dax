@@ -1,14 +1,52 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "mark": { "type": "arc", "innerRadius": 54, "strokeWidth": 2 },
   "encoding": {
-    "theta": { "field": "Revenue", "type": "quantitative" },
-    "color": { "field": "CanalSalesChannel", "type": "nominal", "legend": { "title": "Canal" } },
+    "y": {
+      "field": "CanalSalesChannel",
+      "type": "nominal",
+      "sort": "-x",
+      "axis": { "title": null, "labelLimit": 180 }
+    },
+    "x": {
+      "field": "Revenue",
+      "type": "quantitative",
+      "axis": { "title": "Facturacion actual" }
+    },
     "tooltip": [
       { "field": "CanalChannelGroup", "type": "nominal", "title": "Grupo" },
       { "field": "CanalSalesChannel", "type": "nominal", "title": "Canal" },
       { "field": "Revenue", "type": "quantitative", "title": "Facturacion" },
-      { "field": "RevenueShare", "type": "quantitative", "title": "Peso" }
+      { "field": "RevenueShare", "type": "quantitative", "title": "Peso" },
+      { "field": "Margin", "type": "quantitative", "title": "Margen" },
+      { "field": "Orders", "type": "quantitative", "title": "Pedidos" }
     ]
-  }
+  },
+  "layer": [
+    {
+      "mark": { "type": "bar", "cornerRadiusEnd": 10, "size": 28 },
+      "encoding": {
+        "color": {
+          "field": "CanalSalesChannel",
+          "type": "nominal",
+          "legend": null
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "baseline": "middle",
+        "dx": 8,
+        "fontWeight": 600
+      },
+      "encoding": {
+        "text": {
+          "field": "RevenueShare",
+          "type": "quantitative",
+          "format": ".1%"
+        }
+      }
+    }
+  ]
 }

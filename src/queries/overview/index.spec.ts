@@ -28,7 +28,9 @@ describe("overview queries", () => {
         const visual = channelMix();
 
         expect(visual.query).toContain("'Canal'[Sales Channel]");
-        expect(visual.vegaLiteSpec.mark).toMatchObject({ type: "arc" });
+        expect(visual.vegaLiteSpec.layer?.[0]).toMatchObject({
+            mark: { type: "bar" },
+        });
     });
 
     it("builds the attention items factory", () => {

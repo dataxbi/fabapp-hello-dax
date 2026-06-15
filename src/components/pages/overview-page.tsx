@@ -155,8 +155,8 @@ export function OverviewPage() {
 
             <div className="grid gap-l xl:grid-cols-[0.9fr_1.1fr]">
                 <QueryChartPanel
-                    title="Mix por canal"
-                    description="Cómo se reparte la facturación actual entre canal propio, indirecto y digital."
+                    title="Canales por facturación"
+                    description="Comparación del aporte actual de cada canal. Sustituimos el donut por barras para facilitar la lectura entre categorías."
                     visual={channelMix()}
                     chartClassName="h-[300px]"
                     onInteraction={(events) => handleSelection("mix por canal", events)}
