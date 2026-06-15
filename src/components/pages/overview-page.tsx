@@ -16,6 +16,10 @@ function formatMetric(value: unknown, format?: string) {
     return typeof formatted === "string" ? formatted : String(formatted ?? "—");
 }
 
+function formatDelta(value: unknown, format = "0.0%") {
+    return formatMetric(value, format);
+}
+
 export function OverviewPage() {
     const summaryVisual = kpiSummary();
     const summaryQuery = useSemanticModelQuery({
@@ -37,41 +41,66 @@ export function OverviewPage() {
             {
                 label: "Facturación",
                 value: formatMetric(summary?.RevenueCurrent, "€#,##0"),
-                supportingText: `Periodo ${latestPeriod} · YTD ${formatMetric(summary?.RevenueYtd, "€#,##0")}`,
-                deltaLabel: `YTD anterior ${formatMetric(summary?.RevenueYtdPrevious, "€#,##0")}`,
+                periodLabel: `Cierre ${latestPeriod}`,
+                trendLabel: `vs periodo anterior ${formatDelta(summary?.RevenueVsPreviousPct)}`,
                 deltaValue: Number(summary?.RevenueVsPreviousPct ?? 0),
+                contextItems: [
+                    { label: "YTD actual", value: formatMetric(summary?.RevenueYtd, "€#,##0") },
+                    { label: "YTD anterior", value: formatMetric(summary?.RevenueYtdPrevious, "€#,##0") },
+                    { label: "vs año anterior", value: formatDelta(summary?.RevenueVsLastYearPct) },
+                ],
                 accent: "primary" as const,
             },
             {
                 label: "Margen",
                 value: formatMetric(summary?.MarginCurrent, "€#,##0"),
-                supportingText: `Margen % actual ${formatMetric(summary?.MarginPercentCurrent, "0.0%")}`,
-                deltaLabel: `Mes anterior ${formatMetric(summary?.MarginPercentPrevious, "0.0%")}`,
+                periodLabel: `Cierre ${latestPeriod}`,
+                trendLabel: `vs periodo anterior ${formatDelta(summary?.MarginVsPreviousPct)}`,
                 deltaValue: Number(summary?.MarginVsPreviousPct ?? 0),
+                contextItems: [
+                    { label: "Margen % actual", value: formatMetric(summary?.MarginPercentCurrent, "0.0%") },
+                    { label: "Margen % anterior", value: formatMetric(summary?.MarginPercentPrevious, "0.0%") },
+                    { label: "Facturación asociada", value: formatMetric(summary?.RevenueCurrent, "€#,##0") },
+                ],
                 accent: "secondary" as const,
             },
             {
                 label: "Margen %",
                 value: formatMetric(summary?.MarginPercentCurrent, "0.0%"),
-                supportingText: `Comparativa interanual ${formatMetric(summary?.RevenueVsLastYearPct, "0.0%")}`,
-                deltaLabel: `YTD vs anterior ${formatMetric(summary?.RevenueYtdVsPreviousPct, "0.0%")}`,
+                periodLabel: `Cierre ${latestPeriod}`,
+                trendLabel: `vs año anterior ${formatDelta(summary?.RevenueVsLastYearPct)}`,
                 deltaValue: Number(summary?.RevenueVsLastYearPct ?? 0),
+                contextItems: [
+                    { label: "Mes actual", value: formatMetric(summary?.MarginPercentCurrent, "0.0%") },
+                    { label: "Mes anterior", value: formatMetric(summary?.MarginPercentPrevious, "0.0%") },
+                    { label: "YTD vs anterior", value: formatDelta(summary?.RevenueYtdVsPreviousPct) },
+                ],
                 accent: "secondary" as const,
             },
             {
                 label: "Pedidos",
                 value: formatMetric(summary?.OrdersCurrent, "#,##0"),
-                supportingText: "Actividad comercial del último cierre mensual",
-                deltaLabel: "vs periodo anterior",
+                periodLabel: `Cierre ${latestPeriod}`,
+                trendLabel: `vs periodo anterior ${formatDelta(summary?.OrdersVsPreviousPct)}`,
                 deltaValue: Number(summary?.OrdersVsPreviousPct ?? 0),
+                contextItems: [
+                    { label: "Periodo actual", value: formatMetric(summary?.OrdersCurrent, "#,##0") },
+                    { label: "Variación mensual", value: formatDelta(summary?.OrdersVsPreviousPct) },
+                    { label: "Clientes activos", value: formatMetric(summary?.ActiveClientsCurrent, "#,##0") },
+                ],
                 accent: "secondary" as const,
             },
             {
                 label: "Clientes activos",
                 value: formatMetric(summary?.ActiveClientsCurrent, "#,##0"),
-                supportingText: "Clientes con actividad positiva en el periodo",
-                deltaLabel: "vs periodo anterior",
+                periodLabel: `Cierre ${latestPeriod}`,
+                trendLabel: `vs periodo anterior ${formatDelta(summary?.ActiveClientsVsPreviousPct)}`,
                 deltaValue: Number(summary?.ActiveClientsVsPreviousPct ?? 0),
+                contextItems: [
+                    { label: "Periodo actual", value: formatMetric(summary?.ActiveClientsCurrent, "#,##0") },
+                    { label: "Variación mensual", value: formatDelta(summary?.ActiveClientsVsPreviousPct) },
+                    { label: "Pedidos actuales", value: formatMetric(summary?.OrdersCurrent, "#,##0") },
+                ],
                 accent: "secondary" as const,
             },
         ];
@@ -103,7 +132,7 @@ export function OverviewPage() {
                 </div>
             </section>
 
-            <div className="grid gap-l md:grid-cols-2 xl:grid-cols-5">
+            <div className="grid gap-l md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
                 {metrics.map((metric) => (
                     <MetricCard key={metric.label} {...metric} />
                 ))}
