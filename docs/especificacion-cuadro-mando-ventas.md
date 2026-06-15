@@ -40,6 +40,12 @@ La página principal debe responder en pocos segundos a estas preguntas:
 4. ¿Cómo se reparte el negocio entre canales?
 5. ¿Qué áreas requieren atención inmediata?
 
+#### Interacción en Overview
+- Los gráficos y la tabla de la overview deben permitir **selección directa** sobre un punto, barra o fila.
+- La selección en un visual debe **filtrar el resto de visuales de la página**, incluidas las tarjetas KPI superiores.
+- Debe existir un indicador visible del **filtro activo** y una acción para **limpiar** la selección.
+- En esta iteración el filtrado cruzado se limita a **Overview**; las páginas de detalle quedan como siguiente fase.
+
 ### 5.2 Páginas de detalle
 
 #### Regiones
@@ -73,6 +79,12 @@ La página principal debe responder en pocos segundos a estas preguntas:
 - **Mismo periodo del año anterior**
 - **YTD actual vs YTD anterior**
 
+### Reglas de contexto interactivo
+
+- Si el usuario selecciona un **periodo** en la tendencia, el resto de visuales debe recalcularse para ese periodo.
+- Si selecciona una **región** o **canal**, el resto de visuales debe recalcularse para esa dimensión.
+- Si selecciona una fila del **bloque de atención**, el filtro debe traducirse a la dimensión correspondiente (`Region` o `Categoria`) antes de aplicarse al resto de visuales.
+
 ## 7. Principios de diseño
 
 - Tono visual: **corporativo**
@@ -99,6 +111,7 @@ La página principal debe responder en pocos segundos a estas preguntas:
 - Build del proyecto
 - Tests unitarios relevantes
 - Validación en el flujo embed de Fabric
+- Validación de selección, filtrado cruzado y limpieza del filtro activo en Overview
 
 ## 10. Política de commits
 
