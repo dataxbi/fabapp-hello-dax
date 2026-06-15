@@ -1,5 +1,6 @@
 import type { VisualizationSpec } from "@microsoft/fabric-visuals";
 import type { ColumnMetadataMap } from "@/lib/to-data-table";
+import { applyOverviewFilters, type OverviewFilters } from "./filters";
 import query from "./channel-mix.dax?raw";
 import vegaLiteSpec from "./channel-mix.json";
 
@@ -14,6 +15,11 @@ export const columnMetadata: ColumnMetadataMap = {
     "Revenue Share": { name: "RevenueShare", displayName: "Peso sobre facturacion", format: "0.0%" }
 };
 
-export function channelMix() {
-    return { connection, query, columnMetadata, vegaLiteSpec: vegaLiteSpec as VisualizationSpec };
+export function channelMix(filters?: OverviewFilters) {
+    return {
+        connection,
+        query: applyOverviewFilters(query, filters),
+        columnMetadata,
+        vegaLiteSpec: vegaLiteSpec as VisualizationSpec,
+    };
 }

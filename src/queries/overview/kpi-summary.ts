@@ -1,5 +1,6 @@
 import type { VisualizationSpec } from "@microsoft/fabric-visuals";
 import type { ColumnMetadataMap } from "@/lib/to-data-table";
+import { applyOverviewFilters, type OverviewFilters } from "./filters";
 import query from "./kpi-summary.dax?raw";
 import vegaLiteSpec from "./kpi-summary.json";
 
@@ -24,11 +25,16 @@ export const columnMetadata: ColumnMetadataMap = {
     "Active Clients vs Previous %": { name: "ActiveClientsVsPreviousPct", displayName: "Clientes activos vs periodo anterior", format: "0.0%" }
 };
 
-export function kpiSummary(): {
+export function kpiSummary(filters?: OverviewFilters): {
     connection: string;
     query: string;
     columnMetadata: ColumnMetadataMap;
     vegaLiteSpec: VisualizationSpec;
 } {
-    return { connection, query, columnMetadata, vegaLiteSpec: vegaLiteSpec as VisualizationSpec };
+    return {
+        connection,
+        query: applyOverviewFilters(query, filters),
+        columnMetadata,
+        vegaLiteSpec: vegaLiteSpec as VisualizationSpec,
+    };
 }

@@ -1,5 +1,6 @@
 import type { VisualizationSpec } from "@microsoft/fabric-visuals";
 import type { ColumnMetadataMap } from "@/lib/to-data-table";
+import { applyOverviewFilters, type OverviewFilters } from "./filters";
 import query from "./regional-comparison.dax?raw";
 import vegaLiteSpec from "./regional-comparison.json";
 
@@ -17,6 +18,11 @@ export const columnMetadata: ColumnMetadataMap = {
     "Revenue vs Previous %": { name: "RevenueVsPreviousPct", displayName: "Var. vs periodo anterior", format: "0.0%" }
 };
 
-export function regionalComparison() {
-    return { connection, query, columnMetadata, vegaLiteSpec: vegaLiteSpec as VisualizationSpec };
+export function regionalComparison(filters?: OverviewFilters) {
+    return {
+        connection,
+        query: applyOverviewFilters(query, filters),
+        columnMetadata,
+        vegaLiteSpec: vegaLiteSpec as VisualizationSpec,
+    };
 }

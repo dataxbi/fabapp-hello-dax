@@ -1,5 +1,6 @@
 import type { VisualizationSpec } from "@microsoft/fabric-visuals";
 import type { ColumnMetadataMap } from "@/lib/to-data-table";
+import { applyOverviewFilters, type OverviewFilters } from "./filters";
 import query from "./attention-items.dax?raw";
 import vegaLiteSpec from "./attention-items.json";
 
@@ -14,6 +15,11 @@ export const columnMetadata: ColumnMetadataMap = {
     "Margin Percent": { name: "MarginPercent", displayName: "Margen %", format: "0.0%" }
 };
 
-export function attentionItems() {
-    return { connection, query, columnMetadata, vegaLiteSpec: vegaLiteSpec as VisualizationSpec };
+export function attentionItems(filters?: OverviewFilters) {
+    return {
+        connection,
+        query: applyOverviewFilters(query, filters),
+        columnMetadata,
+        vegaLiteSpec: vegaLiteSpec as VisualizationSpec,
+    };
 }

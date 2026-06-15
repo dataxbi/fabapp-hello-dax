@@ -33,6 +33,13 @@ describe("overview queries", () => {
         });
     });
 
+    it("injects filters into overview queries when provided", () => {
+        const visual = kpiSummary({ region: "Norte" });
+
+        expect(visual.query).toContain("CALCULATETABLE(");
+        expect(visual.query).toContain(`KEEPFILTERS(TREATAS({ "Norte" }, 'Region'[Region]))`);
+    });
+
     it("builds the attention items factory", () => {
         const visual = attentionItems();
 

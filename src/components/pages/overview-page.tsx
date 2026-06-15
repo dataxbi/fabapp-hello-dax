@@ -1,11 +1,12 @@
 import { useMemo, useState } from "react";
-import { convertDataTableToRows, formatValue, type InteractionEvent } from "@microsoft/fabric-visuals-core";
+import { convertDataTableToRows, formatValue } from "@microsoft/fabric-visuals-core";
 import { attentionItems, channelMix, kpiSummary, monthlyTrend, regionalComparison } from "@/queries";
 import { useSemanticModelQuery } from "@/hooks/use-semantic-model-query";
 import { toDataTable } from "@/lib/to-data-table";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { QueryChartPanel } from "@/components/dashboard/query-chart-panel";
 import { QueryGridPanel } from "@/components/dashboard/query-grid-panel";
+import { deriveOverviewFilter, type OverviewFilterSource } from "./overview-filters";
 
 function formatMetric(value: unknown, format?: string) {
     if (typeof value === "string") {
@@ -21,12 +22,16 @@ function formatDelta(value: unknown, format = "0.0%") {
 }
 
 export function OverviewPage() {
-    const summaryVisual = kpiSummary();
+    const [activeFilter, setActiveFilter] = useState<ReturnType<typeof deriveOverviewFilter>>(null);
+    const summaryVisual = kpiSummary(activeFilter?.filters);
     const summaryQuery = useSemanticModelQuery({
         connection: summaryVisual.connection,
         query: summaryVisual.query,
     });
-    const [activeSelection, setActiveSelection] = useState<string | null>(null);
+    const trendVisual = monthlyTrend(activeFilter?.source === "monthlyTrend" ? undefined : activeFilter?.filters);
+    const regionalVisual = regionalComparison(activeFilter?.source === "regionalComparison" ? undefined : activeFilter?.filters);
+    const channelVisual = channelMix(activeFilter?.source === "channelMix" ? undefined : activeFilter?.filters);
+    const attentionVisual = attentionItems(activeFilter?.source === "attentionItems" ? undefined : activeFilter?.filters);
 
     const metrics = useMemo(() => {
         if (summaryQuery.data?.status !== "success") {
@@ -106,8 +111,8 @@ export function OverviewPage() {
         ];
     }, [summaryQuery.data, summaryVisual.columnMetadata]);
 
-    const handleSelection = (surface: string, events: InteractionEvent[]) => {
-        setActiveSelection(events.some((event) => event.action === "select") ? surface : null);
+    const handleSelection = (source: OverviewFilterSource, events: InteractionEvent[]) => {
+        setActiveFilter(deriveOverviewFilter(source, events));
     };
 
     return (
@@ -124,9 +129,19 @@ export function OverviewPage() {
                             antes de bajar a páginas de detalle.
                         </p>
                     </div>
-                    {activeSelection ? (
-                        <div className="rounded-full border border-border bg-card/80 px-l py-s text-[length:var(--text-200)] text-foreground">
-                            Selección activa en <span className="font-semibold">{activeSelection}</span>
+                    {activeFilter ? (
+                        <div className="flex flex-wrap items-center gap-s rounded-full border border-border bg-card/80 px-m py-s text-[length:var(--text-200)] text-foreground">
+                            <span className="text-muted-foreground">Filtro activo:</span>
+                            <span className="font-semibold">
+                                {activeFilter.label}: {activeFilter.detail}
+                            </span>
+                            <button
+                                type="button"
+                                onClick={() => setActiveFilter(null)}
+                                className="rounded-full border border-border bg-background/80 px-s py-xs font-medium text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                            >
+                                Limpiar
+                            </button>
                         </div>
                     ) : null}
                 </div>
@@ -142,14 +157,14 @@ export function OverviewPage() {
                 <QueryChartPanel
                     title="Tendencia mensual"
                     description="Evolución de la facturación con apoyo de margen, pedidos y clientes activos para contextualizar el ritmo comercial."
-                    visual={monthlyTrend()}
-                    onInteraction={(events) => handleSelection("tendencia mensual", events)}
+                    visual={trendVisual}
+                    onInteraction={(events) => handleSelection("monthlyTrend", events)}
                 />
                 <QueryChartPanel
                     title="Comparativa regional"
                     description="Peso de cada región en el último cierre y variación frente al periodo anterior para detectar impulsores del crecimiento."
-                    visual={regionalComparison()}
-                    onInteraction={(events) => handleSelection("comparativa regional", events)}
+                    visual={regionalVisual}
+                    onInteraction={(events) => handleSelection("regionalComparison", events)}
                 />
             </div>
 
@@ -157,15 +172,15 @@ export function OverviewPage() {
                 <QueryChartPanel
                     title="Canales por facturación"
                     description="Comparación del aporte actual de cada canal. Sustituimos el donut por barras para facilitar la lectura entre categorías."
-                    visual={channelMix()}
+                    visual={channelVisual}
                     chartClassName="h-[300px]"
-                    onInteraction={(events) => handleSelection("mix por canal", events)}
+                    onInteraction={(events) => handleSelection("channelMix", events)}
                 />
                 <QueryGridPanel
                     title="Bloque de atención"
                     description="Ranking de entidades que merecen seguimiento prioritario por su menor evolución relativa en el último cierre."
-                    visual={attentionItems()}
-                    onInteraction={(events) => handleSelection("bloque de atención", events)}
+                    visual={attentionVisual}
+                    onInteraction={(events) => handleSelection("attentionItems", events)}
                 />
             </div>
         </div>

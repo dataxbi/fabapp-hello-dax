@@ -1,5 +1,6 @@
 import type { VisualizationSpec } from "@microsoft/fabric-visuals";
 import type { ColumnMetadataMap } from "@/lib/to-data-table";
+import { applyOverviewFilters, type OverviewFilters } from "./filters";
 import query from "./monthly-trend.dax?raw";
 import vegaLiteSpec from "./monthly-trend.json";
 
@@ -15,6 +16,11 @@ export const columnMetadata: ColumnMetadataMap = {
     "Active Clients": { name: "ActiveClients", displayName: "Clientes activos", format: "#,##0" }
 };
 
-export function monthlyTrend() {
-    return { connection, query, columnMetadata, vegaLiteSpec: vegaLiteSpec as VisualizationSpec };
+export function monthlyTrend(filters?: OverviewFilters) {
+    return {
+        connection,
+        query: applyOverviewFilters(query, filters),
+        columnMetadata,
+        vegaLiteSpec: vegaLiteSpec as VisualizationSpec,
+    };
 }
