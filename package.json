@@ -1,8 +1,8 @@
 {
   "name": "fabapp-hello-dax",
-  "description": "This is a starter template for building Fabric Apps - Analytics web apps. Clone this repo locally and follow the steps below to get started.",
+  "description": "Cuadro de mando ejecutivo de ventas sobre Microsoft Fabric con branding Dataxbi y consultas DAX en tiempo real.",
   "license": "MIT",
-  "author": "Microsoft",
+  "author": "Dataxbi",
   "private": true,
   "version": "0.0.0",
   "type": "module",
