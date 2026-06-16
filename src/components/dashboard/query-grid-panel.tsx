@@ -22,6 +22,7 @@ interface QueryGridPanelProps {
     className?: string;
     gridClassName?: string;
     onInteraction?: (events: InteractionEvent[]) => void;
+    headerAction?: ReactNode;
 }
 
 export function QueryGridPanel({
@@ -31,6 +32,7 @@ export function QueryGridPanel({
     className,
     gridClassName = "max-h-[360px]",
     onInteraction,
+    headerAction,
 }: QueryGridPanelProps) {
     const theme = useCssTheme();
     const { data, error, isLoading } = useSemanticModelQuery({
@@ -64,7 +66,7 @@ export function QueryGridPanel({
     }
 
     return (
-        <Panel title={title} description={description} className={className}>
+        <Panel title={title} description={description} className={className} headerAction={headerAction}>
             {content}
         </Panel>
     );

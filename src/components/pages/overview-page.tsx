@@ -1,12 +1,22 @@
 import { useMemo, useState } from "react";
+import type { InteractionEvent } from "@microsoft/fabric-visuals-core";
 import { convertDataTableToRows, formatValue } from "@microsoft/fabric-visuals-core";
 import { attentionItems, channelMix, kpiSummary, monthlyTrend, regionalComparison } from "@/queries";
 import { useSemanticModelQuery } from "@/hooks/use-semantic-model-query";
 import { toDataTable } from "@/lib/to-data-table";
+import { cn } from "@/lib/utils";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { QueryChartPanel } from "@/components/dashboard/query-chart-panel";
 import { QueryGridPanel } from "@/components/dashboard/query-grid-panel";
-import { deriveOverviewFilter, type OverviewFilterSource } from "./overview-filters";
+import {
+    getCombinedOverviewFilters,
+    hasOverviewActiveFilters,
+    highlightOverviewVisual,
+    listOverviewActiveFilters,
+    reduceOverviewFilters,
+    type OverviewActiveFilters,
+    type OverviewFilterSource,
+} from "./overview-filters";
 
 function formatMetric(value: unknown, format?: string) {
     if (typeof value === "string") {
@@ -22,16 +32,30 @@ function formatDelta(value: unknown, format = "0.0%") {
 }
 
 export function OverviewPage() {
-    const [activeFilter, setActiveFilter] = useState<ReturnType<typeof deriveOverviewFilter>>(null);
-    const summaryVisual = kpiSummary(activeFilter?.filters);
+    const [activeFilters, setActiveFilters] = useState<OverviewActiveFilters>({});
+    const combinedFilters = getCombinedOverviewFilters(activeFilters);
+    const activeFilterList = listOverviewActiveFilters(activeFilters);
+    const summaryVisual = kpiSummary(combinedFilters);
     const summaryQuery = useSemanticModelQuery({
         connection: summaryVisual.connection,
         query: summaryVisual.query,
     });
-    const trendVisual = monthlyTrend(activeFilter?.source === "monthlyTrend" ? undefined : activeFilter?.filters);
-    const regionalVisual = regionalComparison(activeFilter?.source === "regionalComparison" ? undefined : activeFilter?.filters);
-    const channelVisual = channelMix(activeFilter?.source === "channelMix" ? undefined : activeFilter?.filters);
-    const attentionVisual = attentionItems(activeFilter?.source === "attentionItems" ? undefined : activeFilter?.filters);
+    const trendVisualBase = monthlyTrend(getCombinedOverviewFilters(activeFilters, { excludeSource: "monthlyTrend" }));
+    const regionalVisualBase = regionalComparison(getCombinedOverviewFilters(activeFilters, { excludeSource: "regionalComparison" }));
+    const channelVisualBase = channelMix(getCombinedOverviewFilters(activeFilters, { excludeSource: "channelMix" }));
+    const attentionVisual = attentionItems(getCombinedOverviewFilters(activeFilters, { excludeSource: "attentionItems" }));
+    const trendVisual = {
+        ...trendVisualBase,
+        vegaLiteSpec: highlightOverviewVisual("monthlyTrend", trendVisualBase.vegaLiteSpec, activeFilters),
+    };
+    const regionalVisual = {
+        ...regionalVisualBase,
+        vegaLiteSpec: highlightOverviewVisual("regionalComparison", regionalVisualBase.vegaLiteSpec, activeFilters),
+    };
+    const channelVisual = {
+        ...channelVisualBase,
+        vegaLiteSpec: highlightOverviewVisual("channelMix", channelVisualBase.vegaLiteSpec, activeFilters),
+    };
 
     const metrics = useMemo(() => {
         if (summaryQuery.data?.status !== "success") {
@@ -112,8 +136,21 @@ export function OverviewPage() {
     }, [summaryQuery.data, summaryVisual.columnMetadata]);
 
     const handleSelection = (source: OverviewFilterSource, events: InteractionEvent[]) => {
-        setActiveFilter(deriveOverviewFilter(source, events));
+        setActiveFilters((current) => reduceOverviewFilters(current, source, events));
     };
+
+    const getPanelStateClassName = (source: OverviewFilterSource) =>
+        cn(
+            activeFilters[source] &&
+                "border-primary/40 shadow-[0_18px_60px_rgba(10,184,166,0.18)] ring-1 ring-primary/15",
+        );
+
+    const getPanelAction = (source: OverviewFilterSource) =>
+        activeFilters[source] ? (
+            <span className="inline-flex rounded-full bg-primary/12 px-s py-xs text-[length:var(--text-200)] font-semibold text-primary">
+                Selección activa
+            </span>
+        ) : null;
 
     return (
         <div className="space-y-xxl">
@@ -129,18 +166,40 @@ export function OverviewPage() {
                             antes de bajar a páginas de detalle.
                         </p>
                     </div>
-                    {activeFilter ? (
-                        <div className="flex flex-wrap items-center gap-s rounded-full border border-border bg-card/80 px-m py-s text-[length:var(--text-200)] text-foreground">
+                    {hasOverviewActiveFilters(activeFilters) ? (
+                        <div className="flex flex-wrap items-center gap-s rounded-3xl border border-border bg-card/80 px-m py-s text-[length:var(--text-200)] text-foreground">
                             <span className="text-muted-foreground">Filtro activo:</span>
-                            <span className="font-semibold">
-                                {activeFilter.label}: {activeFilter.detail}
-                            </span>
+                            {activeFilterList.map((activeFilter) => (
+                                <span
+                                    key={activeFilter.source}
+                                    className="inline-flex items-center gap-xs rounded-full border border-border bg-background/80 px-s py-xs"
+                                >
+                                    <span className="font-semibold">
+                                        {activeFilter.label}: {activeFilter.detail}
+                                    </span>
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            setActiveFilters((current) => {
+                                                const nextState = { ...current };
+                                                delete nextState[activeFilter.source];
+                                                return nextState;
+                                            })
+                                        }
+                                        className="rounded-full px-xs text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                                        aria-label={`Quitar filtro ${activeFilter.label} ${activeFilter.detail}`}
+                                    >
+                                        ×
+                                    </button>
+                                </span>
+                            ))}
+                            <span className="text-muted-foreground">Pulsa de nuevo sobre el elemento marcado para limpiarlo.</span>
                             <button
                                 type="button"
-                                onClick={() => setActiveFilter(null)}
+                                onClick={() => setActiveFilters({})}
                                 className="rounded-full border border-border bg-background/80 px-s py-xs font-medium text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
                             >
-                                Limpiar
+                                Limpiar todo
                             </button>
                         </div>
                     ) : null}
@@ -158,12 +217,16 @@ export function OverviewPage() {
                     title="Tendencia mensual"
                     description="Evolución de la facturación con apoyo de margen, pedidos y clientes activos para contextualizar el ritmo comercial."
                     visual={trendVisual}
+                    className={getPanelStateClassName("monthlyTrend")}
+                    headerAction={getPanelAction("monthlyTrend")}
                     onInteraction={(events) => handleSelection("monthlyTrend", events)}
                 />
                 <QueryChartPanel
                     title="Comparativa regional"
                     description="Peso de cada región en el último cierre y variación frente al periodo anterior para detectar impulsores del crecimiento."
                     visual={regionalVisual}
+                    className={getPanelStateClassName("regionalComparison")}
+                    headerAction={getPanelAction("regionalComparison")}
                     onInteraction={(events) => handleSelection("regionalComparison", events)}
                 />
             </div>
@@ -173,13 +236,17 @@ export function OverviewPage() {
                     title="Canales por facturación"
                     description="Comparación del aporte actual de cada canal. Sustituimos el donut por barras para facilitar la lectura entre categorías."
                     visual={channelVisual}
+                    className={getPanelStateClassName("channelMix")}
                     chartClassName="h-[300px]"
+                    headerAction={getPanelAction("channelMix")}
                     onInteraction={(events) => handleSelection("channelMix", events)}
                 />
                 <QueryGridPanel
                     title="Bloque de atención"
                     description="Ranking de entidades que merecen seguimiento prioritario por su menor evolución relativa en el último cierre."
                     visual={attentionVisual}
+                    className={getPanelStateClassName("attentionItems")}
+                    headerAction={getPanelAction("attentionItems")}
                     onInteraction={(events) => handleSelection("attentionItems", events)}
                 />
             </div>

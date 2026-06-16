@@ -21,6 +21,7 @@ interface QueryChartPanelProps {
     className?: string;
     chartClassName?: string;
     onInteraction?: (events: InteractionEvent[]) => void;
+    headerAction?: ReactNode;
 }
 
 export function QueryChartPanel({
@@ -30,6 +31,7 @@ export function QueryChartPanel({
     className,
     chartClassName = "h-[320px]",
     onInteraction,
+    headerAction,
 }: QueryChartPanelProps) {
     const theme = useCssTheme();
     const { data, error, isLoading } = useSemanticModelQuery({
@@ -68,7 +70,7 @@ export function QueryChartPanel({
     }
 
     return (
-        <Panel title={title} description={description} className={className}>
+        <Panel title={title} description={description} className={className} headerAction={headerAction}>
             {content}
         </Panel>
     );
