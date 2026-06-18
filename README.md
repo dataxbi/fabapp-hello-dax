@@ -3,7 +3,16 @@
 
 Una aplicación de Fabric creada con la plantilla Data App de Rayfin y que se conecta a un modelo semántico de ventas.
 
+Funciona el **cross-filter** entre visuales y tiene un panel para indicar los filtros seleccionados y limpairlos.
+
+También se incorporó un **panel de filtros dínamicos** que al cargar la aplicación identifica las dimensiones, usando las funciones INFO de DAX, y construye dinácamente los controles de filtro acorde al tipo de datos. 
+
+
 ![Pantallazo de la portada del cuadro de mando de ventas](/dataXbi-fabric-apps-hello-dax.png)
+
+![Un fragmento de la página donde se ve el panel indicador de los cross-filter aplicados.](/dataXbi-fabric-apps-hello-dax-cross-filter.png)
+
+![El panel de filtros dinámicos.](/dataXbi-fabric-apps-hello-dax-dynamic-filters.png)
 
 ## Estado actual
 
