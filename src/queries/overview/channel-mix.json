@@ -23,14 +23,7 @@
   },
   "layer": [
     {
-      "mark": { "type": "bar", "cornerRadiusEnd": 10, "size": 28 },
-      "encoding": {
-        "color": {
-          "field": "CanalSalesChannel",
-          "type": "nominal",
-          "legend": null
-        }
-      }
+      "mark": { "type": "bar", "cornerRadiusEnd": 10, "size": 28, "color": "#0ab8a6" }
     },
     {
       "mark": {

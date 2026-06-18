@@ -8,6 +8,7 @@ describe("portfolio queries", () => {
         expect(visual.connection).toBe("salesModel");
         expect(visual.query).toContain("'Producto'[Category]");
         expect(visual.columnMetadata["Units"]?.format).toBe("#,##0");
+        expect(visual.vegaLiteSpec.mark).toMatchObject({ type: "bar", color: "#0ab8a6" });
     });
 
     it("builds the brand performance factory", () => {

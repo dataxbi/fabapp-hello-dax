@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "mark": { "type": "bar", "cornerRadiusEnd": 6 },
+  "mark": { "type": "bar", "cornerRadiusEnd": 6, "color": "#0ab8a6" },
   "encoding": {
     "y": { "field": "ClienteCustomer", "type": "nominal", "sort": "-x", "axis": { "title": null } },
     "x": { "field": "Revenue", "type": "quantitative", "axis": { "title": "Facturacion" } },

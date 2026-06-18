@@ -1,10 +1,9 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "mark": { "type": "bar", "cornerRadiusEnd": 8 },
+  "mark": { "type": "bar", "cornerRadiusEnd": 8, "color": "#0ab8a6" },
   "encoding": {
     "y": { "field": "RegionRegion", "type": "nominal", "sort": "-x", "axis": { "title": null } },
     "x": { "field": "Revenue", "type": "quantitative", "axis": { "title": "Facturacion" } },
-    "color": { "field": "RevenueVsPreviousPct", "type": "quantitative", "legend": { "title": "Var. vs anterior" } },
     "tooltip": [
       { "field": "RegionRegion", "type": "nominal", "title": "Region" },
       { "field": "Revenue", "type": "quantitative", "title": "Facturacion" },

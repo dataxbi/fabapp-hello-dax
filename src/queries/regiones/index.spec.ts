@@ -7,7 +7,7 @@ describe("regiones queries", () => {
 
         expect(visual.connection).toBe("salesModel");
         expect(visual.query).toContain("'Region'[Region]");
-        expect(visual.vegaLiteSpec.mark).toMatchObject({ type: "bar" });
+        expect(visual.vegaLiteSpec.mark).toMatchObject({ type: "bar", color: "#0ab8a6" });
     });
 
     it("builds the region monthly trend factory", () => {
@@ -22,5 +22,9 @@ describe("regiones queries", () => {
 
         expect(visual.query).toContain("'Canal'[Channel Group]");
         expect(visual.columnMetadata["Canal Sales Channel"]?.displayName).toBe("Canal");
+        expect(visual.vegaLiteSpec.encoding?.color).toMatchObject({
+            field: "RegionRegion",
+            type: "nominal",
+        });
     });
 });

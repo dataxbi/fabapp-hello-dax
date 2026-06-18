@@ -22,6 +22,7 @@ describe("overview queries", () => {
 
         expect(visual.query).toContain("'Region'[Region]");
         expect(visual.columnMetadata["Revenue vs Previous %"]?.format).toBe("0.0%");
+        expect("color" in (visual.vegaLiteSpec.encoding ?? {})).toBe(false);
     });
 
     it("builds the channel mix factory", () => {
@@ -29,7 +30,7 @@ describe("overview queries", () => {
 
         expect(visual.query).toContain("'Canal'[Sales Channel]");
         expect(visual.vegaLiteSpec.layer?.[0]).toMatchObject({
-            mark: { type: "bar" },
+            mark: { type: "bar", color: "#0ab8a6" },
         });
     });
 
