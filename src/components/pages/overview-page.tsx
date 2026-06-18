@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import type { InteractionEvent } from "@microsoft/fabric-visuals-core";
 import { convertDataTableToRows, formatValue } from "@microsoft/fabric-visuals-core";
+import type { DynamicSemanticFilter } from "@/lib/dynamic-semantic-filters";
 import { attentionItems, channelMix, kpiSummary, monthlyTrend, regionalComparison } from "@/queries";
 import { useSemanticModelQuery } from "@/hooks/use-semantic-model-query";
 import { toDataTable } from "@/lib/to-data-table";
@@ -8,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { QueryChartPanel } from "@/components/dashboard/query-chart-panel";
 import { QueryGridPanel } from "@/components/dashboard/query-grid-panel";
+import { OverviewDynamicFilterPanel } from "./overview-dynamic-filter-panel";
 import {
     getCombinedOverviewFilters,
     hasOverviewActiveFilters,
@@ -33,17 +35,41 @@ function formatDelta(value: unknown, format = "0.0%") {
 
 export function OverviewPage() {
     const [activeFilters, setActiveFilters] = useState<OverviewActiveFilters>({});
+    const [dynamicFilters, setDynamicFilters] = useState<Record<string, DynamicSemanticFilter>>({});
     const combinedFilters = getCombinedOverviewFilters(activeFilters);
+    const combinedDynamicFilters = useMemo(() => Object.values(dynamicFilters), [dynamicFilters]);
+    const effectiveFilters = useMemo(
+        () =>
+            combinedDynamicFilters.length > 0
+                ? {
+                      ...(combinedFilters ?? {}),
+                      dynamic: combinedDynamicFilters,
+                  }
+                : combinedFilters,
+        [combinedDynamicFilters, combinedFilters],
+    );
     const activeFilterList = listOverviewActiveFilters(activeFilters);
-    const summaryVisual = kpiSummary(combinedFilters);
+    const summaryVisual = kpiSummary(effectiveFilters);
     const summaryQuery = useSemanticModelQuery({
         connection: summaryVisual.connection,
         query: summaryVisual.query,
     });
-    const trendVisualBase = monthlyTrend(getCombinedOverviewFilters(activeFilters, { excludeSource: "monthlyTrend" }));
-    const regionalVisualBase = regionalComparison(getCombinedOverviewFilters(activeFilters, { excludeSource: "regionalComparison" }));
-    const channelVisualBase = channelMix(getCombinedOverviewFilters(activeFilters, { excludeSource: "channelMix" }));
-    const attentionVisual = attentionItems(getCombinedOverviewFilters(activeFilters, { excludeSource: "attentionItems" }));
+    const trendVisualBase = monthlyTrend({
+        ...(getCombinedOverviewFilters(activeFilters, { excludeSource: "monthlyTrend" }) ?? {}),
+        ...(combinedDynamicFilters.length > 0 ? { dynamic: combinedDynamicFilters } : {}),
+    });
+    const regionalVisualBase = regionalComparison({
+        ...(getCombinedOverviewFilters(activeFilters, { excludeSource: "regionalComparison" }) ?? {}),
+        ...(combinedDynamicFilters.length > 0 ? { dynamic: combinedDynamicFilters } : {}),
+    });
+    const channelVisualBase = channelMix({
+        ...(getCombinedOverviewFilters(activeFilters, { excludeSource: "channelMix" }) ?? {}),
+        ...(combinedDynamicFilters.length > 0 ? { dynamic: combinedDynamicFilters } : {}),
+    });
+    const attentionVisual = attentionItems({
+        ...(getCombinedOverviewFilters(activeFilters, { excludeSource: "attentionItems" }) ?? {}),
+        ...(combinedDynamicFilters.length > 0 ? { dynamic: combinedDynamicFilters } : {}),
+    });
     const trendVisual = {
         ...trendVisualBase,
         vegaLiteSpec: highlightOverviewVisual("monthlyTrend", trendVisualBase.vegaLiteSpec, activeFilters),
@@ -205,6 +231,19 @@ export function OverviewPage() {
                     ) : null}
                 </div>
             </section>
+
+            <OverviewDynamicFilterPanel
+                activeFilters={dynamicFilters}
+                onUpsertFilter={(filter) => setDynamicFilters((current) => ({ ...current, [filter.id]: filter }))}
+                onRemoveFilter={(filterId) =>
+                    setDynamicFilters((current) => {
+                        const nextState = { ...current };
+                        delete nextState[filterId];
+                        return nextState;
+                    })
+                }
+                onClearAll={() => setDynamicFilters({})}
+            />
 
             <div className="grid gap-l md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
                 {metrics.map((metric) => (

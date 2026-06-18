@@ -1,8 +1,11 @@
+import { applyDynamicSemanticFilters, type DynamicSemanticFilter } from "@/lib/dynamic-semantic-filters";
+
 export interface OverviewFilters {
     yearMonth?: string;
     region?: string;
     salesChannel?: string;
     category?: string;
+    dynamic?: DynamicSemanticFilter[];
 }
 
 function escapeDaxString(value: string) {
@@ -37,22 +40,24 @@ function buildFilterExpressions(filters?: OverviewFilters) {
 
 export function applyOverviewFilters(query: string, filters?: OverviewFilters) {
     const expressions = buildFilterExpressions(filters);
+    const staticQuery =
+        expressions.length === 0
+            ? query
+            : (() => {
+                  const match = query.match(/([\s\S]*?EVALUATE\s*)([\s\S]*?)(\s*ORDER BY[\s\S]*)?$/i);
 
-    if (expressions.length === 0) {
-        return query;
-    }
+                  if (!match) {
+                      return query;
+                  }
 
-    const match = query.match(/([\s\S]*?EVALUATE\s*)([\s\S]*?)(\s*ORDER BY[\s\S]*)?$/i);
+                  const [, beforeEvaluate, evaluateBody, orderBy = ""] = match;
+                  const trimmedBody = evaluateBody.trim();
 
-    if (!match) {
-        return query;
-    }
-
-    const [, beforeEvaluate, evaluateBody, orderBy = ""] = match;
-    const trimmedBody = evaluateBody.trim();
-
-    return `${beforeEvaluate}CALCULATETABLE(
+                  return `${beforeEvaluate}CALCULATETABLE(
   ${trimmedBody},
   ${expressions.join(",\n  ")}
 )${orderBy}`;
+              })();
+
+    return applyDynamicSemanticFilters(staticQuery, filters?.dynamic);
 }

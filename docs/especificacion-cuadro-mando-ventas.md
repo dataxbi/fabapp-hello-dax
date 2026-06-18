@@ -44,6 +44,13 @@ La página principal debe responder en pocos segundos a estas preguntas:
 - Los gráficos y la tabla de la overview deben permitir **selección directa** sobre un punto, barra o fila.
 - La selección en un visual debe **filtrar el resto de visuales de la página**, incluidas las tarjetas KPI superiores.
 - Debe existir un indicador visible del **filtro activo** y una acción para **limpiar** la selección.
+- Debe existir además un **panel lateral de slicers dinámicos** para filtros manuales descubiertos desde el propio modelo semántico.
+- Los slicers dinámicos deben construirse a partir de `INFO.VIEW.COLUMNS()` y mostrar solo dimensiones visibles y útiles.
+- El comportamiento del filtro debe adaptarse al tipo de dato:
+  - texto/categórico -> selector con búsqueda
+  - fecha -> rango
+  - numérico -> mínimo/máximo
+- La carga de opciones debe ser **bajo demanda** por filtro; no se deben precargar todos los valores del modelo al entrar en la página.
 - En esta iteración el filtrado cruzado se limita a **Overview**; las páginas de detalle quedan como siguiente fase.
 
 ### 5.2 Páginas de detalle
@@ -105,6 +112,10 @@ La página principal debe responder en pocos segundos a estas preguntas:
 - Visuales con `VegaVisual`
 - Tablas con `DataGrid`
 - Conversión de resultados con `toDataTable`
+- Primitives de UI reutilizables en `src/components/ui/`, alineadas con el enfoque de `shadcn/ui`
+- Builder común de filtros DAX para combinar:
+  - filtros interactivos de Overview
+  - filtros dinámicos descubiertos desde metadatos DAX
 
 ## 9. Validación
 
@@ -112,6 +123,8 @@ La página principal debe responder en pocos segundos a estas preguntas:
 - Tests unitarios relevantes
 - Validación en el flujo embed de Fabric
 - Validación de selección, filtrado cruzado y limpieza del filtro activo en Overview
+- Validación del panel lateral de slicers dinámicos
+- Validación de búsqueda de opciones y aplicación/limpieza de filtros manuales
 
 ## 10. Política de commits
 
@@ -127,3 +140,4 @@ La solución se considerará completa cuando:
 3. La experiencia use branding Dataxbi y formato es-ES.
 4. Las consultas DAX devuelvan datos reales del modelo.
 5. La app quede validada dentro del portal de Fabric.
+6. Los slicers dinámicos de Overview descubran dimensiones reales del modelo y apliquen filtros coherentes con el tipo de dato.

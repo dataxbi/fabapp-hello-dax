@@ -60,7 +60,7 @@ export function toDataTable(
 }
 
 function normalizeColumnName(input: string): string {
-    return input.replace(/[\s.\[\]\\'"`()%]/g, "").toLowerCase();
+    return input.replace(/[\s.[\]\\'"`()%]/g, "").toLowerCase();
 }
 
 function coerceCellValue(value: unknown, dataType: string | undefined): unknown {

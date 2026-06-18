@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 interface PanelProps {
@@ -11,20 +12,15 @@ interface PanelProps {
 
 export function Panel({ title, description, children, className, headerAction }: PanelProps) {
     return (
-        <section
-            className={cn(
-                "rounded-4xl border border-border bg-card/95 p-xl shadow-[0_18px_60px_rgba(7,17,31,0.08)] backdrop-blur-sm",
-                className,
-            )}
-        >
-            <div className="mb-l flex items-start justify-between gap-l">
+        <Card className={className}>
+            <CardHeader className="flex-row items-start justify-between gap-l space-y-0">
                 <div className="space-y-xs">
-                    <h3 className="font-heading text-[length:var(--text-500)] leading-500 text-foreground">{title}</h3>
-                    <p className="max-w-[68ch] text-[length:var(--text-200)] leading-200 text-muted-foreground">{description}</p>
+                    <CardTitle>{title}</CardTitle>
+                    <CardDescription className="max-w-[68ch]">{description}</CardDescription>
                 </div>
                 {headerAction}
-            </div>
-            {children}
-        </section>
+            </CardHeader>
+            <CardContent className={cn("pt-0", !headerAction && "pb-xl")}>{children}</CardContent>
+        </Card>
     );
 }
